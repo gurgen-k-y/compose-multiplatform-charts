@@ -16,28 +16,28 @@ internal fun Double.mapValueToDifferentRange(
     outMax: Double,
 ) = (this - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 
-fun Float.mapValueToDifferentRange(
+internal fun Float.mapValueToDifferentRange(
     inMin: Float,
     inMax: Float,
     outMin: Float,
     outMax: Float,
 ) = (this - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 
-fun Long.mapValueToDifferentRange(
+internal fun Long.mapValueToDifferentRange(
     inMin: Long,
     inMax: Long,
     outMin: Long,
     outMax: Long,
 ) = (this - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 
-fun Long.mapValueToDifferentRange(
+internal fun Long.mapValueToDifferentRange(
     inMin: Long,
     inMax: Long,
     outMin: Float,
     outMax: Float,
 ) = (this - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 
-fun Number.round(decimals: Int = 2): String {
+internal fun Number.round(decimals: Int = 2): String {
     return when (this) {
         is Double,
         is Float,

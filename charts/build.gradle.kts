@@ -1,4 +1,5 @@
-import org.gradle.accessors.dm.LibrariesForLibs
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("maven-publish")
@@ -7,10 +8,14 @@ plugins {
     id("com.android.library")
 }
 
+val mavenPropertiesFile = rootProject.file("publishing.properties")
+val mavenProperties = Properties()
+mavenProperties.load(FileInputStream(mavenPropertiesFile))
+
 android {
     namespace = "com.netguru.multiplatform.charts"
 
-    compileSdk = 33
+    compileSdk = 34
     buildFeatures.compose = true
 
     defaultConfig {
@@ -40,6 +45,19 @@ android {
     }
 
     buildFeatures { compose = true }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/gurgen-k-y/compose-multiplatform-charts")
+            credentials {
+                username = mavenProperties["gpr.user"] as String
+                password = mavenProperties["gpr.token"] as String
+            }
+        }
+    }
 }
 
 val jvmTarget = "17"
@@ -83,5 +101,7 @@ kotlin {
     }
 }
 
+task("testClasses")
+
 group = "com.netguru.multiplatform"
-version = "0.0.1_kalist-RC"
+version = "0.0.1"

@@ -4,7 +4,7 @@ import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.tween
 
 sealed class ChartAnimation {
-    object Disabled : ChartAnimation()
+    data object Disabled : ChartAnimation()
 
     class Simple(
         val animationSpec: () -> AnimationSpec<Float> = {
