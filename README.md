@@ -13,10 +13,27 @@ Currently supported platforms are <strong>Desktop</strong> and <strong>Android</
 </div>
 
 # Installation
-### Using local build
-Go to `charts` folder and run `assemble[Debug|Release]`. This results in an `aar` file which can then be copied/imported to your project as any other `aar` artifact.
-### Using maven dependency
-TBA
+
+```kotlin
+dependencies {
+  implementation("com.netguru.multiplatform:charts:[latest-version]")
+}
+```
+
+Add maven repository:
+
+```kotlin
+repositories {
+    // other
+    maven {
+            url = uri("https://maven.pkg.github.com/gurgen-k-y/compose-multiplatform-charts")
+            credentials {
+                username = [your github username]
+                password = [your PSA with repo read rights]
+            }
+    }
+}
+```
 
 # Usage
 The library provides following components:

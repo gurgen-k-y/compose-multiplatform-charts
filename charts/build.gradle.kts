@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -76,6 +77,11 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    jvm("desktop")
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs()
+
     sourceSets {
         commonMain {
             dependencies {
@@ -101,7 +107,11 @@ kotlin {
     }
 }
 
+compose.desktop {
+
+}
+
 task("testClasses")
 
 group = "com.netguru.multiplatform"
-version = "0.0.1"
+version = "0.0.2-wasm"
