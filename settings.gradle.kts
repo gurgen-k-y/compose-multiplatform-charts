@@ -20,3 +20,4 @@ dependencyResolutionManagement {
 rootProject.name = "compose-multiplatform-charts"
 
 include(":charts")
+include(":example")

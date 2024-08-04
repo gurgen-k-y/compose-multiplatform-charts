@@ -1,9 +1,12 @@
 
 plugins {
     id("maven-publish")
-    alias(libs.plugins.compose)
-    id("com.android.library") version "8.0.1" apply false
-    kotlin("multiplatform") version "1.9.20" apply false
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.compose) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.jetbrainsKotlinJvm) apply false
 }
 
 buildscript {
@@ -15,12 +18,8 @@ buildscript {
     dependencies {
         classpath(libs.plugin.android)
         classpath(libs.plugin.kotlin)
-        classpath(libs.plugin.shot)
     }
 }
-
-group = libs.versions.project.group.get()
-version = libs.versions.project.version.get()
 
 allprojects {
     repositories {
