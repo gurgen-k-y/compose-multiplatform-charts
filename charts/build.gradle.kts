@@ -1,10 +1,13 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
     id("maven-publish")
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.compose)
-    kotlin("multiplatform")
+    alias(libs.plugins.compose.compiler)
     id("com.android.library")
 }
 
@@ -15,17 +18,13 @@ mavenProperties.load(FileInputStream(mavenPropertiesFile))
 android {
     namespace = "com.netguru.multiplatform.charts"
 
-    compileSdk = 34
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     buildFeatures.compose = true
 
     defaultConfig {
-        minSdk = 26
+        minSdk = libs.versions.android.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        /*
-        versionCode = 1
-        versionName = "0.1"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"*/
     }
 
     composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
@@ -76,6 +75,25 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    jvm("desktop")
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        moduleName = "composeApp"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(project.projectDir.path)
+                    }
+                }
+            }
+        }
+        binaries.executable()
+    }
+
     sourceSets {
         commonMain {
             dependencies {
@@ -101,7 +119,11 @@ kotlin {
     }
 }
 
+compose.desktop {
+
+}
+
 task("testClasses")
 
 group = "com.netguru.multiplatform"
-version = "0.0.1"
+version = "0.1.0"
