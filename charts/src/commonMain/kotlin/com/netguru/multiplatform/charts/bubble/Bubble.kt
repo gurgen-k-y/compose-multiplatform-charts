@@ -12,10 +12,12 @@ data class Bubble(
     var radius: Float = value
 ) {
     var position: Vector = Vector(0f, 0f)
+
     var velocity: Vector = Vector(
         Random.nextFloat() - 0.5f,
         Random.nextFloat() - 0.5f
     ).normalize()
+
     private var acceleration: Vector = Vector(0f, 0f)
 
     fun applyForce(force: Vector) {

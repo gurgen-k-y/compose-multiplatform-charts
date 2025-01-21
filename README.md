@@ -5,7 +5,7 @@
 
 <div align="center">
 Library contains several chart composables for usage in Kotlin Multiplatform projects.   
-Currently supported platforms are <strong>Desktop</strong> and <strong>Android</strong>.
+Currently supported platforms are <strong>Desktop, iOS, WASM</strong> and <strong>Android</strong>.
 </div>
 
 <div align="center">

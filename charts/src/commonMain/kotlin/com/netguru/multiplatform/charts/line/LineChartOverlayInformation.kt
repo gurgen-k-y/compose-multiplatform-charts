@@ -31,7 +31,10 @@ internal fun LineChartOverlayInformation(
     overlayHeaderLayout: @Composable (value: Long) -> Unit,
     overlayDataEntryLayout: @Composable (dataName: String, value: Float) -> Unit,
 ) {
-    if (positionX < 0) return
+    if (positionX < 0) {
+        print("X position can't be negative")
+        return
+    }
 
     OverlayInformation(
         positionX = positionX,

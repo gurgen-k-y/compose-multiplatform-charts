@@ -9,6 +9,7 @@ data class BarChartCategory(
 ) {
     val minY: Float
         get() = entries.minOf { it.y }
+
     val maxY: Float
         get() = entries.maxOf { it.y }
 }
