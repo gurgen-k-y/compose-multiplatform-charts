@@ -16,7 +16,7 @@ val mavenProperties = Properties()
 mavenProperties.load(FileInputStream(mavenPropertiesFile))
 
 android {
-    namespace = "com.netguru.multiplatform.charts"
+    namespace = "io.github.gurgenky.charts"
 
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     buildFeatures.compose = true

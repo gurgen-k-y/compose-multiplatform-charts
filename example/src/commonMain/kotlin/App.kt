@@ -11,11 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.netguru.multiplatform.charts.ChartAnimation
-import com.netguru.multiplatform.charts.pie.LegendIcon
-import com.netguru.multiplatform.charts.pie.PieChartConfig
-import com.netguru.multiplatform.charts.pie.PieChartData
-import com.netguru.multiplatform.charts.pie.PieChartWithLegend
+import io.github.gurgenky.charts.ChartAnimation
+import io.github.gurgenky.charts.pie.LegendIcon
+import io.github.gurgenky.charts.pie.PieChartConfig
+import io.github.gurgenky.charts.pie.PieChartData
+import io.github.gurgenky.charts.pie.PieChartWithLegend
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
