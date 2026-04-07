@@ -27,7 +27,6 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
