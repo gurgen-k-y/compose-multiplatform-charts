@@ -1,22 +1,33 @@
 package io.github.gurgenky.charts.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.graphics.Color
 
-val LocalChartColors = staticCompositionLocalOf {
-    ChartColors(
-        primary = Color.Unspecified,
-        surface = Color.Unspecified,
-        grid = Color.Unspecified,
-        emptyGasBottle = Color.Unspecified,
-        fullGasBottle = Color.Unspecified,
-        overlayLine = Color.Unspecified,
-    )
+val LocalChartTheme = staticCompositionLocalOf {
+    ChartDefaults.lightColors()
 }
 
-internal object ChartTheme {
+object ChartTheme {
     val colors: ChartColors
         @Composable
-        get() = LocalChartColors.current
+        @ReadOnlyComposable
+        get() = LocalChartTheme.current
+
+    @Composable
+    operator fun invoke(
+        colors: ChartColors = if (isSystemInDarkTheme()) {
+            ChartDefaults.darkColors()
+        } else {
+            ChartDefaults.lightColors()
+        },
+        content: @Composable () -> Unit,
+    ) {
+        CompositionLocalProvider(LocalChartTheme provides colors, content = content)
+    }
 }
+
+@Deprecated("Use LocalChartTheme", ReplaceWith("LocalChartTheme"))
+val LocalChartColors = LocalChartTheme

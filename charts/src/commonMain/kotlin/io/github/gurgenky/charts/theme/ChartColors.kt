@@ -11,4 +11,8 @@ data class ChartColors constructor(
     val emptyGasBottle: Color,
     val fullGasBottle: Color,
     val overlayLine: Color,
+    val axis: Color = grid,
+    val label: Color = Color.Unspecified,
+    val tooltipBackground: Color = surface,
+    val tooltipContent: Color = Color.Unspecified,
 )

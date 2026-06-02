@@ -24,4 +24,40 @@ object ChartDefaults {
         fullGasBottle = fullGasBottle,
         overlayLine = overlayLine,
     )
+
+    fun lightColors(
+        primary: Color = Color(0xFF2563EB),
+        surface: Color = Color.White,
+        grid: Color = Color(0xFFD1D5DB),
+        error: Color = Color(0xFFDC2626),
+    ) = ChartColors(
+        primary = primary,
+        surface = surface,
+        grid = grid,
+        emptyGasBottle = error,
+        fullGasBottle = primary,
+        overlayLine = error,
+        axis = Color(0xFF6B7280),
+        label = Color(0xFF111827),
+        tooltipBackground = Color(0xFF111827),
+        tooltipContent = Color.White,
+    )
+
+    fun darkColors(
+        primary: Color = Color(0xFF60A5FA),
+        surface: Color = Color(0xFF111827),
+        grid: Color = Color(0xFF374151),
+        error: Color = Color(0xFFF87171),
+    ) = ChartColors(
+        primary = primary,
+        surface = surface,
+        grid = grid,
+        emptyGasBottle = error,
+        fullGasBottle = primary,
+        overlayLine = error,
+        axis = Color(0xFF9CA3AF),
+        label = Color(0xFFF9FAFB),
+        tooltipBackground = Color(0xFFF9FAFB),
+        tooltipContent = Color(0xFF111827),
+    )
 }
