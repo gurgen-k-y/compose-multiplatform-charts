@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.unit.Dp
 import io.github.gurgenky.charts.mapValueToDifferentRange
 
@@ -15,9 +16,8 @@ internal fun DrawScope.drawLineChart(
     graphTopPadding: Dp,
     graphBottomPadding: Dp,
     alpha: List<Float>,
+    reusablePath: Path = Path(),
 ) {
-    // calculate path
-    val path = Path()
     lineChartData.series.forEachIndexed { seriesIndex, data ->
 
         val mappedPoints =
@@ -28,14 +28,15 @@ internal fun DrawScope.drawLineChart(
                 graphTopPadding.toPx(),
                 graphBottomPadding.toPx()
             )
+        if (mappedPoints.isEmpty()) return@forEachIndexed
         val connectionPoints = calculateConnectionPointsForBezierCurve(mappedPoints)
 
-        path.reset() // reuse path
+        reusablePath.reset()
         mappedPoints.forEachIndexed { index, value ->
             if (index == 0) {
-                path.moveTo(value.x, value.y)
+                reusablePath.moveTo(value.x, value.y)
             } else {
-                path.cubicTo(
+                reusablePath.cubicTo(
                     connectionPoints[index - 1].first.x,
                     connectionPoints[index - 1].first.y,
                     connectionPoints[index - 1].second.x,
@@ -47,31 +48,33 @@ internal fun DrawScope.drawLineChart(
         }
 
         // draw line
-        drawPath(
-            path = path,
-            color = data.lineColor.copy(alpha[seriesIndex]),
-            style = Stroke(
-                width = data.lineWidth.toPx(),
-                pathEffect = if (data.dashedLine) dashedPathEffect else null
+        clipRect {
+            drawPath(
+                path = reusablePath,
+                color = data.lineColor.copy(alpha[seriesIndex]),
+                style = Stroke(
+                    width = data.lineWidth.toPx(),
+                    pathEffect = if (data.dashedLine) dashedPathEffect else null
+                )
             )
-        )
 
-        // close shape and fill
-        path.lineTo(mappedPoints.last().x, size.height)
-        path.lineTo(mappedPoints.first().x, size.height)
-        drawPath(
-            path = path,
-            Brush.verticalGradient(
-                listOf(
-                    Color.Transparent,
-                    data.fillColor.copy(alpha[seriesIndex] / 12),
-                    data.fillColor.copy(alpha[seriesIndex] / 6)
+            reusablePath.lineTo(mappedPoints.last().x, size.height)
+            reusablePath.lineTo(mappedPoints.first().x, size.height)
+            reusablePath.close()
+            drawPath(
+                path = reusablePath,
+                Brush.verticalGradient(
+                    listOf(
+                        Color.Transparent,
+                        data.fillColor.copy(alpha[seriesIndex] / 12),
+                        data.fillColor.copy(alpha[seriesIndex] / 6)
+                    ),
+                    startY = reusablePath.getBounds().bottom,
+                    endY = reusablePath.getBounds().top,
                 ),
-                startY = path.getBounds().bottom,
-                endY = path.getBounds().top,
-            ),
-            style = Fill
-        )
+                style = Fill
+            )
+        }
     }
 }
 
@@ -82,7 +85,9 @@ private fun mapDataToPixels(
     graphTopPadding: Float = 0f,
     graphBottomPadding: Float,
 ): List<PointF> {
-    val mappedPoints = currentSeries.listOfPoints.map {
+    val mappedPoints = currentSeries.listOfPoints.asSequence()
+        .filter { it.x in lineChartData.minX..lineChartData.maxX }
+        .map {
         val x = it.x.mapValueToDifferentRange(
             lineChartData.minX,
             lineChartData.maxX,
@@ -96,7 +101,8 @@ private fun mapDataToPixels(
             graphTopPadding
         )
         PointF(x, y)
-    }
+        }
+        .toList()
 
     return mappedPoints
 }

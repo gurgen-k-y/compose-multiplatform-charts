@@ -16,8 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
@@ -116,8 +117,10 @@ fun LineChart(
                 Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .drawBehind {
-                        val lines = measureChartGrid(
+                    .drawWithCache {
+                        val reusablePath = Path()
+                        onDrawBehind {
+                            val lines = measureChartGrid(
                             xAxisScale = TimestampXAxisScale(
                                 min = lineChartData.minX,
                                 max = lineChartData.maxX,
@@ -132,16 +135,18 @@ fun LineChart(
                             ),
                             horizontalLinesOffset = horizontalLinesOffset
                         )
-                        verticalGridLines = lines.verticalLines
-                        horizontalGridLines = lines.horizontalLines
-                        drawChartGrid(lines, colors.grid)
+                            verticalGridLines = lines.verticalLines
+                            horizontalGridLines = lines.horizontalLines
+                            drawChartGrid(lines, colors.grid)
 
-                        drawLineChart(
-                            lineChartData = lineChartData,
-                            graphTopPadding = horizontalLinesOffset,
-                            graphBottomPadding = horizontalLinesOffset,
-                            alpha = alpha,
-                        )
+                            drawLineChart(
+                                lineChartData = lineChartData,
+                                graphTopPadding = horizontalLinesOffset,
+                                graphBottomPadding = horizontalLinesOffset,
+                                alpha = alpha,
+                                reusablePath = reusablePath,
+                            )
+                        }
                     }
                     // Touch input
                     .pointerInput(Unit) {
