@@ -1,8 +1,0 @@
-# Compose Multiplatform Charts
-
-- Keep chart geometry and data transformations in common Kotlin code.
-- Never allocate mutable collections, `Path`, `Brush`, or formatter objects inside a per-frame `DrawScope` loop.
-- Hoist interactive state; composables should accept immutable data and expose callbacks.
-- Keep Canvas drawing deterministic across Android, iOS, desktop, and Wasm.
-- Add unit coverage for scale and geometry changes and update the example gallery for public API changes.
-- Run `./gradlew check` before committing.
