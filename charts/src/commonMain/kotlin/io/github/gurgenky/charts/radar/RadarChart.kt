@@ -17,6 +17,7 @@ import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
+/** One polygon rendered against the axes of a radar chart. */
 @Immutable
 data class RadarChartSeries(
     val name: String,
@@ -26,6 +27,7 @@ data class RadarChartSeries(
     val strokeWidth: Dp = 2.dp,
 )
 
+/** Validated axes, series, and scale range for a radar chart. */
 @Immutable
 data class RadarChartData(
     val axes: List<String>,
@@ -47,6 +49,7 @@ data class RadarChartData(
     }
 }
 
+/** Controls the radar web density, stroke sizes, and rotation. */
 @Immutable
 data class RadarChartConfig(
     val levels: Int = 5,
@@ -59,6 +62,11 @@ data class RadarChartConfig(
     }
 }
 
+/**
+ * Draws one or more data polygons on a shared polar web.
+ *
+ * Values outside [RadarChartData.minimum] and [RadarChartData.maximum] are clamped to the web.
+ */
 @Composable
 fun RadarChart(
     data: RadarChartData,

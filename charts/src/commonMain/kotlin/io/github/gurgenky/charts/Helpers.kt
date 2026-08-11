@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
+/** Linearly maps a value between numeric ranges. */
 internal fun Double.mapValueToDifferentRange(
     inMin: Double,
     inMax: Double,
@@ -16,6 +17,7 @@ internal fun Double.mapValueToDifferentRange(
     outMax: Double,
 ) = (this - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 
+/** Float specialization of the common linear range mapping. */
 internal fun Float.mapValueToDifferentRange(
     inMin: Float,
     inMax: Float,
@@ -23,6 +25,7 @@ internal fun Float.mapValueToDifferentRange(
     outMax: Float,
 ) = (this - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 
+/** Integer specialization that preserves the historical integer result. */
 internal fun Long.mapValueToDifferentRange(
     inMin: Long,
     inMax: Long,
@@ -37,6 +40,7 @@ internal fun Long.mapValueToDifferentRange(
     outMax: Float,
 ) = (this - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 
+/** Formats numeric labels without exposing platform-specific formatters. */
 internal fun Number.round(decimals: Int = 2): String {
     return when (this) {
         is Double,
@@ -52,6 +56,7 @@ internal fun Number.round(decimals: Int = 2): String {
     }
 }
 
+/** Starts an entrance animation once for each distinct data value. */
 @Composable
 internal fun StartAnimation(animation: ChartAnimation, data: Any): Boolean {
     var animationPlayed by remember(data) {

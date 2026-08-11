@@ -11,9 +11,11 @@ import io.github.gurgenky.charts.line.LineChartData
 import io.github.gurgenky.charts.line.LineChartPoint
 import io.github.gurgenky.charts.line.LineChartSeries
 
+/** Restricts nested receiver lookup inside chart builder blocks. */
 @DslMarker
 annotation class ChartDslMarker
 
+/** Controls one Cartesian axis. Null bounds are inferred from the supplied data. */
 @Immutable
 data class AxisConfig(
     val visible: Boolean = true,
@@ -22,6 +24,7 @@ data class AxisConfig(
     val maximumTickCount: Int = 5,
 )
 
+/** Controls plot grid visibility and line appearance. */
 @Immutable
 data class GridConfig(
     val visible: Boolean = true,
@@ -30,6 +33,7 @@ data class GridConfig(
     val dashPattern: List<Float> = emptyList(),
 )
 
+/** Enables selection and tooltip behavior for interactive charts. */
 @Immutable
 data class InteractionConfig(
     val enabled: Boolean = true,
@@ -37,12 +41,14 @@ data class InteractionConfig(
     val selectOnHover: Boolean = true,
 )
 
+/** Controls whether and how the chart legend is laid out. */
 @Immutable
 data class LegendConfig(
     val visible: Boolean = false,
     val itemSpacing: Dp = 8.dp,
 )
 
+/** Common configuration shared by Cartesian chart implementations. */
 @Immutable
 data class ChartConfig(
     val xAxis: AxisConfig = AxisConfig(),
@@ -53,6 +59,7 @@ data class ChartConfig(
     val contentPadding: Dp = 8.dp,
 )
 
+/** Builds immutable common chart configuration. */
 @ChartDslMarker
 class ChartConfigBuilder {
     var xAxis: AxisConfig = AxisConfig()
@@ -65,9 +72,11 @@ class ChartConfigBuilder {
     fun build() = ChartConfig(xAxis, yAxis, grid, interaction, legend, contentPadding)
 }
 
+/** Creates common chart configuration with a type-safe Kotlin DSL. */
 fun chartConfig(block: ChartConfigBuilder.() -> Unit): ChartConfig =
     ChartConfigBuilder().apply(block).build()
 
+/** Builds one line series and validates each appended point. */
 @ChartDslMarker
 class LineSeriesBuilder internal constructor(
     private val name: String,
@@ -78,6 +87,7 @@ class LineSeriesBuilder internal constructor(
     var dashed: Boolean = false
     private val points = mutableListOf<LineChartPoint>()
 
+    /** Adds a finite point to this series. */
     fun point(x: Long, y: Float) {
         require(y.isFinite()) { "Line chart values must be finite." }
         points += LineChartPoint(x, y)
@@ -86,10 +96,12 @@ class LineSeriesBuilder internal constructor(
     internal fun build() = LineChartSeries(name, lineWidth, color, fillColor, dashed, points.toList())
 }
 
+/** Collects line-series builders into [LineChartData]. */
 @ChartDslMarker
 class LineChartDataBuilder {
     private val series = mutableListOf<LineChartSeries>()
 
+    /** Adds a named line series. */
     fun series(name: String, color: Color, block: LineSeriesBuilder.() -> Unit) {
         series += LineSeriesBuilder(name, color).apply(block).build()
     }
@@ -97,13 +109,16 @@ class LineChartDataBuilder {
     internal fun build() = LineChartData(series.toList())
 }
 
+/** Creates line-chart data with a type-safe Kotlin DSL. */
 fun lineChartData(block: LineChartDataBuilder.() -> Unit): LineChartData =
     LineChartDataBuilder().apply(block).build()
 
+/** Builds the entries in one bar-chart category. */
 @ChartDslMarker
 class BarCategoryBuilder internal constructor(private val name: String) {
     private val entries = mutableListOf<BarChartEntry>()
 
+    /** Adds a finite value to the category. */
     fun entry(name: String, value: Float, color: Color) {
         require(value.isFinite()) { "Bar chart values must be finite." }
         entries += BarChartEntry(name, value, color)
@@ -112,10 +127,12 @@ class BarCategoryBuilder internal constructor(private val name: String) {
     internal fun build() = BarChartCategory(name, entries.toList())
 }
 
+/** Collects bar categories into [BarChartData]. */
 @ChartDslMarker
 class BarChartDataBuilder {
     private val categories = mutableListOf<BarChartCategory>()
 
+    /** Adds a named category. */
     fun category(name: String, block: BarCategoryBuilder.() -> Unit) {
         categories += BarCategoryBuilder(name).apply(block).build()
     }
@@ -123,5 +140,6 @@ class BarChartDataBuilder {
     internal fun build() = BarChartData(categories.toList())
 }
 
+/** Creates bar-chart data with a type-safe Kotlin DSL. */
 fun barChartData(block: BarChartDataBuilder.() -> Unit): BarChartData =
     BarChartDataBuilder().apply(block).build()
