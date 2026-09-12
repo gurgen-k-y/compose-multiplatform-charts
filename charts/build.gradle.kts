@@ -1,123 +1,42 @@
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-import java.io.FileInputStream
-import java.util.Properties
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
 
 plugins {
-    id("maven-publish")
     id("io.github.gurgenky.kmp-conventions")
+    alias(libs.plugins.android.kmp.library)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
-    id("com.android.library")
-}
-
-val mavenPropertiesFile = rootProject.file("publishing.properties")
-val mavenProperties = Properties()
-mavenProperties.load(FileInputStream(mavenPropertiesFile))
-
-android {
-    namespace = "io.github.gurgenky.charts"
-
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    buildFeatures.compose = true
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    buildFeatures { compose = true }
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/gurgen-k-y/compose-multiplatform-charts")
-            credentials {
-                username = mavenProperties["gpr.user"] as String
-                password = mavenProperties["gpr.token"] as String
-            }
-        }
-    }
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.maven.publish)
 }
 
 kotlin {
-
-    androidTarget {
-        publishLibraryVariants("release", "debug")
-        publishLibraryVariantsGroupedByFlavor = true
+    android {
+        namespace = "io.github.gurgenky.charts"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
-
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
-
     jvm("desktop")
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        moduleName = "composeApp"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(project.projectDir.path)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }
+    wasmJs { browser() }
 
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation(compose.runtime)
-                implementation(compose.ui)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.materialIconsExtended)
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.uiUtil)
-                implementation(compose.components.uiToolingPreview)
-                implementation(compose.runtimeSaveable)
-            }
+        commonMain.dependencies {
+            implementation("org.jetbrains.compose.runtime:runtime:1.12.0")
+            implementation("org.jetbrains.compose.ui:ui:1.12.0")
+            implementation("org.jetbrains.compose.foundation:foundation:1.12.0")
+            implementation("org.jetbrains.compose.material:material:1.12.0")
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
         }
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test)
-            }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }
 
-compose.desktop {
-
-}
-
-task("testClasses")
-
-group = "com.netguru.multiplatform"
-version = "0.1.0"
+mavenPublishing.coordinates(
+    "io.github.gurgen-k-y",
+    "compose-multiplatform-charts",
+    providers.gradleProperty("VERSION_NAME").getOrElse("1.0.0-SNAPSHOT"),
+)

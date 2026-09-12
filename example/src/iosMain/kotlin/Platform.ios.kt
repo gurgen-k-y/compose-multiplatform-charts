@@ -1,3 +1,5 @@
+package io.github.gurgenky.charts.example
+
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {

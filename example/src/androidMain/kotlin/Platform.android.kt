@@ -1,3 +1,5 @@
+package io.github.gurgenky.charts.example
+
 import android.os.Build
 
 class AndroidPlatform : Platform {
