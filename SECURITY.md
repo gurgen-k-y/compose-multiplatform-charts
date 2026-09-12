@@ -1,4 +1,3 @@
 # Reporting Security Vulnerabilities
 
-If you find a security issue with the application, please reach out
-to [compose.multiplatform.charts@netguru.com](mailto:compose.multiplatform.charts@netguru.com)
+Please report vulnerabilities privately through GitHub's **Security → Report a vulnerability** flow for this repository. Do not open a public issue until a fix is available.

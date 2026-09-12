@@ -1,64 +1,51 @@
 # Contributing
 
-## Creating new Pull Request
-* Fork repository and work on your fork.
-* Create a new PR with a request to merge to the **main** branch
-* If PR is based on issue, then include its number in PR title and add link to it in description
-* One pull request should always address one issue or feature
-* When contributing a new feature, provide motivation and use-cases describing value it may brings to the project
-* Adding video or screenshot is very beneficial, but it's not mandatory
-* Make sure any code contributed is covered by test and documented
+Thanks for improving Compose Multiplatform Charts.
 
-## Code Style
-* Make sure your code is meeting the default [Ktlint standards](https://ktlint.github.io/#rules) 
+## Before opening a pull request
+
+1. Discuss large API changes in an issue first.
+2. Keep one pull request focused on one feature or defect.
+3. Add portable tests for behavior and a gallery example for visible changes.
+4. Document every new public declaration and preserve source compatibility where practical.
+5. Run the validation commands below.
+
+## Project structure
+
+- `charts` is the shared library and the only published module.
+- `example` contains shared gallery UI plus desktop and Wasm launchers.
+- `androidApp` packages the Android gallery.
+- `site` contains the GitHub Pages landing page; the live gallery and API reference are generated in CI.
+
+The public namespace is `io.github.gurgenky.charts`. Deprecated `com.netguru.multiplatform.charts` forwarders are retained for migration and should not receive new APIs.
+
+## Validation
+
+Use JDK 17 and run:
+
+```shell
+./gradlew \
+  :charts:desktopTest \
+  :charts:compileKotlinIosSimulatorArm64 \
+  :example:compileKotlinDesktop \
+  :example:wasmJsBrowserDistribution \
+  :androidApp:assembleDebug \
+  :charts:dokkaGenerate \
+  :charts:publishToMavenLocal
+```
+
+The iOS task requires macOS. Linux contributors can rely on the macOS CI job for that target while running all other applicable checks locally.
 
 ## Documentation
-Dokka is added to the project, so to create (or, better say, update) the docs, you need to run
-```
-./gradlew charts:dokkaHtml
-```
-on the root dir of the project.
 
-After the task is done, copy the generated docs into `./docs`, which can also be done by running
-```
-rm -rf ./docs ; cp -r ./charts/build/dokka/html ./docs
+Generate Dokka locally with:
+
+```shell
+./gradlew :charts:dokkaGenerate
 ```
 
-## Testing
-Testing is implemented using [Shot](https://github.com/pedrovgs/Shot) library. In order to run
-it against prerecorded results, create at least one of the following emulators:
-- tablet: Nexus 10, running API 31
-- phone: Pixel 4a, running API 31
+Open `charts/build/dokka/html/index.html`. Do not commit generated documentation or add a changelog file; Pages regenerates API docs, and release notes belong in GitHub Releases.
 
-For tests to work, make sure you create emulators with default values, as **screen size and
-density must be exactly the same**.
+## Pull requests
 
-Details as to how to run the tests are in the link to the library itself, but to run it against
-prerecorded screenshots, run the following command:
-```
-./gradlew executeScreenshotTests -PdirectorySuffix=$deviceName
-```
-where `$deviceName` is one of:
-- Nexus_10_API_31
-- Pixel_4a_API_31
-
-### Flakiness
-Due to differences in graphics between M1 and x86 chips, images appear different to the script
-and so the tests fail (difference between images can be well above 10%). To human eye they do
-seem the same, though. This is explained and shown in [issue 265](https://github.com/pedrovgs/Shot/issues/265). Until this is fixed, there is a way to test stuff at least locally:
-
-1. uncomment tests that are commented out because of this issue
-2. record all the tests
-3. make the desired changes in the code
-4. check the new UI state against the pre-recorded screenshots (I suggest removing tolerance if
-   the tests were recorded on your machine!)
-5. comment the flaky tests out again
-6. revert the screenshots
-
-### Other issues
-
-- Library [does not work with Java 17](https://github.com/pedrovgs/Shot/pull/292). The error
-  itself is not as obvious as one might expect, though. To fix the issue, use Java 11.
-- Java heap space sometimes [needs to be enlarged](https://github.com/pedrovgs/Shot/issues/304)
-- You might encounter [INSTALL_FAILED_SHARED_USER_INCOMPATIBLE](https://stackoverflow.com/questions/15205159/install-failed-shared-user-incompatible-while-using-shared-user-id)
-  issue. [Here](https://stackoverflow.com/a/21809883/6835732) is a shortcut to the answer.
+Explain the motivation, user-visible behavior, compatibility impact, and validation performed. Screenshots or short recordings are encouraged for rendering changes. Link the relevant issue when one exists.

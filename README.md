@@ -1,346 +1,164 @@
 <div align="center">
-    <img alt="Compose multiplatform charts" src="./assets/charts-logo.svg"/>
-    <h1>Charts for Kotlin Multiplatform projects</h1>
+  <img alt="Compose Multiplatform Charts" src="assets/charts-logo.svg" width="520">
+  <h1>Compose Multiplatform Charts</h1>
+  <p>Customizable, Compose-native charts for Android, iOS, desktop, and Wasm.</p>
+
+  [![CI](https://github.com/gurgen-k-y/compose-multiplatform-charts/actions/workflows/ci.yml/badge.svg)](https://github.com/gurgen-k-y/compose-multiplatform-charts/actions/workflows/ci.yml)
+  [![Maven Central](https://img.shields.io/maven-central/v/io.github.gurgen-k-y/compose-multiplatform-charts)](https://central.sonatype.com/artifact/io.github.gurgen-k-y/compose-multiplatform-charts)
+  [![Pages](https://img.shields.io/badge/docs-GitHub_Pages-347cf6)](https://gurgen-k-y.github.io/compose-multiplatform-charts/)
+  [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE.md)
 </div>
 
-<div align="center">
-Library contains several chart composables for usage in Kotlin Multiplatform projects.   
-Currently supported platforms are <strong>Desktop</strong> and <strong>Android</strong>.
-</div>
+The library renders charts with Compose Canvas and exposes Kotlin-first data, configuration, theme, animation, and interaction APIs. It is distributed as one Maven artifact for every supported target.
 
-<div align="center">
-  <br/><em>Brought with</em> &nbsp;❤️ <em>by</em> &nbsp; <a href="https://www.netguru.com"><img align="center" alt="Netguru logo" src='./assets/readme_netguru_logo.png' width='30'/></a>
-</div>
+This project is built on top of Netguru's original [`com.netguru.multiplatform` Compose Multiplatform Charts repository](https://github.com/netguru/compose-multiplatform-charts).
 
-# Installation
+- [Live gallery](https://gurgen-k-y.github.io/compose-multiplatform-charts/demo/)
+- [API documentation](https://gurgen-k-y.github.io/compose-multiplatform-charts/api/)
 
-```kotlin
-dependencies {
-  implementation("com.netguru.multiplatform:charts:[latest-version]")
-}
-```
+## Installation
 
-Add maven repository:
+Add Maven Central to dependency resolution and use the library from `commonMain`:
 
 ```kotlin
 repositories {
-    // other
-    maven {
-            url = uri("https://maven.pkg.github.com/gurgen-k-y/compose-multiplatform-charts")
-            credentials {
-                username = [your github username]
-                password = [your PSA with repo read rights]
-            }
-    }
+    mavenCentral()
 }
-```
 
-# Usage
-The library provides following components:
- - [BarChart](#BarChart)
- - [BubbleChart](#BubbleChart)
- - [Dial](#Dial)
- - [GasBottle](#GasBottle)
- - [LineChart](#LineChart)
- - [PieChart](#PieChart)
-
-Most of the components have arguments like:
- - **data** - depends on chart type it's complex dataset or few primitives arguments
- - **colors** - gives the possibility to change colors of the chart. In some cases the colors are stored in datasets (like in BarChart or LineChart). See [theming](#Theming) section to set same appearance to all charts.
- - **config** - allows to personalize charts. Depends on chart type it can modify different parts of component. See documentation of specific chart
- - **animation** - the way how chart should appear at the first time
-
-## BarChart
-![Bar chart](/assets/bar-chart.png)
-
-Before using component the BarChartData has to be prepared:
-```kotlin
-val barChartData = BarChartData(
-    categories = listOf(
-        BarChartCategory(
-            name = "Bar Chart 1",
-            entries = listOf(
-                BarChartEntry(
-                    x = "primary",
-                    y = 17f,
-                    color = Color.Yellow,
-                ),
-                BarChartEntry(
-                    x = "secondary",
-                    y = 30f,
-                    color = Color.Red,
-                ),
-            )
-        ),
-        BarChartCategory(
-            name = "Bar Chart 2",
-            entries = listOf(
-                BarChartEntry(
-                    x = "primary",
-                    y = -5f,
-                    color = Color.Yellow,
-                ),
-                BarChartEntry(
-                    x = "secondary",
-                    y = -24f,
-                    color = Color.Red,
-                ),
-            )
-        ),
-    )
-)
-```
-
-```kotlin
-BarChart(
-    data = barChartData,
-    config = BarChartConfig(
-        thickness = 14.dp,
-        cornerRadius = 7.dp,
-    ),
-    modifier = Modifier.height(500.dp),
-    animation = ChartAnimation.Sequenced(),
-)
-```
-
-There is another component called `BarChartWithLegend`. It renders bar chart with legend.
-
-## BubbleChart
-![Bubble chart](/assets/bubble-chart.png)
-
-Before using component the list of Bubble has to be prepared:
-```kotlin
-val bubbles = listOf(
-    Bubble(
-        name = "first",
-        value = 1.2f,
-        icon = Icons.Default.Album,
-        color = Color.Yellow
-    ),
-    Bubble(
-        name = "second",
-        value = 4.6f,
-        icon = Icons.Default.House,
-        color = Color.Green
-    ),
-    Bubble(
-        name = "third",
-        value = 6.9f,
-        icon = Icons.Default.Bed,
-        color = Color.Blue
-    ),
-)
-```
-
-```kotlin
-BubbleChart(
-    bubbles = bubbles,
-    modifier = Modifier.size(300.dp),
-    animation = ChartAnimation.Sequenced(),
-)
-```
-
-# Dial
-![Dial chart](/assets/dial-chart.png)
-
-```kotlin
-Dial(
-    value = 22,
-    minValue = -20,
-    maxValue = 50,
-    modifier = Modifier.fillMaxWidth(),
-    animation = ChartAnimation.Simple {
-        spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
-    },
-    config = DialConfig(
-        thickness = 20.dp,
-        roundCorners = true,
-    ),
-    mainLabel = {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "$it°C",
-                style = MaterialTheme.typography.h4,
-                color = Color.Yellow
-            )
-            Text(
-                text = "outside temperature",
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(top = 12.dp)
-            )
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("io.github.gurgen-k-y:compose-multiplatform-charts:1.0.0")
         }
     }
-)
-```
-
-There is another component `ProcentageDial`. It accepts only one data argument `percentage` in [0-100] range.
-
-
-# GasBottle
-![Gas bottle chart](/assets/gas-bottle.png)
-
-```kotlin
-GasBottle(
-    percentage = 75f,
-    modifier = Modifier.size(width = 200.dp, height = 300.dp),
-    animation = ChartAnimation.Simple {
-        spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessVeryLow
-        )
-    }
-)
-```
-
-# LineChart
-![Line chart](/assets/line-chart.png)
-
-Before using component the LineChartData has to be prepared:
-```kotlin
-val lineData = remember {
-    LineChartData(
-        series = (1..3).map {
-            LineChartSeries(
-                dataName = "data $it",
-                lineColor = listOf(
-                    Color.Yellow,
-                    Color.Red,
-                    Color.Blue,
-                )[it - 1],
-                listOfPoints = (1..10).map { point ->
-                    LineChartPoint(
-                        x = DateTime.now().minus(TimeSpan(point * 24 * 60 * 60 * 1000.0)).unixMillisLong,
-                        y = (1..15).random().toFloat(),
-                    )
-                }
-            )
-        },
-    )
 }
 ```
 
+No GitHub credentials or platform-specific chart dependencies are required.
+
+## Quick start
+
 ```kotlin
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import io.github.gurgenky.charts.ChartAnimation
+import io.github.gurgenky.charts.core.lineChartData
+import io.github.gurgenky.charts.line.LineChart
+
+val data = lineChartData {
+    series(name = "Revenue", color = Color(0xFF347CF6)) {
+        lineWidth = 3.dp
+        point(x = 1_725_148_800_000, y = 18f)
+        point(x = 1_725_235_200_000, y = 27f)
+        point(x = 1_725_321_600_000, y = 24f)
+    }
+}
+
 LineChart(
-    lineChartData = lineData,
-    modifier = Modifier.height(300.dp),
-    xAxisLabel = {
-        Text(
-            fontSize = 12.sp,
-            text = DateTime.fromUnix(it as Long).format("yyyy-MM-dd"),
-            textAlign = TextAlign.Center
-        )
-    },
-    overlayHeaderLabel = {
-        Text(
-            text = DateTime.fromUnix(it as Long).format("yyyy-MM-dd"),
-            style = MaterialTheme.typography.overline
-        )
-    },
-    animation = ChartAnimation.Sequenced()
+    lineChartData = data,
+    modifier = Modifier.height(280.dp),
+    animation = ChartAnimation.Simple(),
 )
 ```
 
+The DSL rejects non-finite values immediately. Immutable constructors remain available when data already comes from a typed domain model.
 
-# PieChart
-![Line chart](/assets/pie-chart.png)
+## Included charts
 
-Before using component the list of PieChartData has to be prepared:
+| Chart | Highlights |
+| --- | --- |
+| Line | Multiple series, fills, dashed strokes, axes, overlays, legend |
+| Area | Multiple non-stacked areas with independent fill and outline |
+| Bar | Grouped positive/negative values, rounded bars, labels, legend |
+| Scatter | Configurable points, selection state, selection callback |
+| Pie / donut | Segment gaps, thickness, icon styles, horizontal/vertical legend |
+| Radar | Multiple series, configurable web, vertices, fill, and semantics |
+| Bubble | Packed proportional bubbles with custom content |
+| Dial / percentage dial | Range, scale, arc joins, labels, animation |
+| Gas bottle | Compact percentage visualization with interpolated fill color |
+
+## Customize charts
+
+Use `ChartTheme` to provide a consistent palette to every chart below it:
+
 ```kotlin
-val data = listOf(
-    PieChartData(
-        name = "Data 1",
-        value = 10.0,
-        color = Color.Yellow,
+ChartTheme(
+    colors = ChartDefaults.darkColors(
+        primary = Color(0xFF8B5CF6),
+        grid = Color(0xFF334155),
     ),
-    PieChartData(
-        name = "Data 2",
-        value = 20.0,
-        color = Color.Green,
-    ),
-    PieChartData(
-        name = "Data 3",
-        value = 30.0,
-        color = Color.Blue,
-    ),
-    PieChartData(
-        name = "Data 4",
-        value = 40.0,
-        color = Color.Red,
-    )
-)
-```
-```kotlin
-PieChart(
-    data = data,
-    modifier = Modifier.size(300.dp),
-    config = PieChartConfig(
-        thickness = 40.dp
-    ),
-)
-```
-
-By default the thickness is `Dp.Infinity`, it means the chart will be fully filled.
-
-# Theming
-The easiest way to set the same colors for all charts is to provide `ChartColors` in the app theme.
-```kotlin
-private val chartColors = ChartColors(
-    primary = Color.Green,
-    grid = Color.LightGray,
-    surface = Color.White,
-    fullGasBottle = Color.Green,
-    emptyGasBottle = Color.Red,
-    overlayLine = Color.Magenta
-)
-
-@Composable
-fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
 ) {
-    CompositionLocalProvider(
-        // ...
-        LocalChartColors provides chartColors,
-    ) {
-        MaterialTheme(
-            // ...
-            content = content,
-        )
-    }
+    DashboardCharts()
 }
-
-```
-There is also default ChartColors provided by the library. It uses the default color set from `MaterialTheme`.
-```kotlin
-LocalChartColors provides ChartDefaults.chartColors()
 ```
 
-Each chart has its own color set which can be used like:
-```kotlin
-BarChart(
-    data = barChartData,
-    colors = BarChartColors(grid = Color.LightGray)
-)
+Chart-specific configuration controls geometry such as bar thickness, pie gaps, radar web lines, axis tick density, and interaction behavior. Labels and legend content are composable slots, so typography and formatting stay in the consuming application.
+
+For controllable selection, create and pass `rememberChartInteractionState()` and observe its `selection` value. Disable hit testing through `ChartConfig(interaction = InteractionConfig(enabled = false))` when a chart is display-only.
+
+## Supported toolchain
+
+| Component | Version |
+| --- | --- |
+| Kotlin | 2.4.20 |
+| Compose Multiplatform | 1.12.0 |
+| Android Gradle Plugin | 9.3.1 |
+| Gradle | 9.5.0 |
+| Android | minSdk 24, compileSdk 37 |
+| Apple | iOS arm64 and iOS simulator arm64 |
+| Desktop | JVM 17 |
+| Web | Kotlin/Wasm browser |
+
+## Migrating from the original package
+
+Version 1.0 moves the public namespace from `com.netguru.multiplatform.charts` to `io.github.gurgenky.charts`. Deprecated forwarding APIs for the original bar, line, pie, bubble, dial, gas-bottle, grid, theme, and animation packages are included in the same artifact, so existing imports can be migrated incrementally.
+
+```diff
+- import com.netguru.multiplatform.charts.line.LineChart
++ import io.github.gurgenky.charts.line.LineChart
 ```
 
-Also there is possibility to use ChartColors inside the specific chart:
-```kotlin
-BarChart(
-    data = barChartData,
-    colors = ChartColors(...).barChartColors,
-)
+New charts, the DSL, interaction state, and expanded theming are available only under the new namespace.
+
+## Gallery and documentation
+
+Run the desktop gallery:
+
+```shell
+./gradlew :example:run
 ```
 
-# Security Issues
-[Reporting Security Vulnerabilities](SECURITY.md)
+Run the Wasm gallery with continuous rebuild:
 
-# Contributing
-[Contributing guidelines](CONTRIBUTING.md)
+```shell
+./gradlew :example:wasmJsBrowserDevelopmentRun --continuous
+```
 
-# License
-This library is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+Generate API docs locally:
+
+```shell
+./gradlew :charts:dokkaGenerate
+```
+
+GitHub Pages publishes the landing page, live Wasm gallery, and Dokka API from `main`.
+
+## Build and contribute
+
+```shell
+./gradlew \
+  :charts:desktopTest \
+  :charts:compileKotlinIosSimulatorArm64 \
+  :example:wasmJsBrowserDistribution \
+  :androidApp:assembleDebug \
+  :charts:publishToMavenLocal
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CLAUDE.md](CLAUDE.md) for project conventions. Releases use a protected GitHub environment and publish only the `charts` module as `io.github.gurgen-k-y:compose-multiplatform-charts`.
+
+Release notes live in GitHub Releases and commit history; this repository intentionally has no changelog file.
+
+## License
+
+[MIT](LICENSE.md) © 2022 Netguru and contributors.

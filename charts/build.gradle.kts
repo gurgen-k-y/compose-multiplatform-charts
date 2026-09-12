@@ -15,6 +15,7 @@ kotlin {
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        withHostTest {}
     }
     iosArm64()
     iosSimulatorArm64()
@@ -35,8 +36,40 @@ kotlin {
     }
 }
 
-mavenPublishing.coordinates(
-    "io.github.gurgen-k-y",
-    "compose-multiplatform-charts",
-    providers.gradleProperty("VERSION_NAME").getOrElse("1.0.0-SNAPSHOT"),
-)
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = true)
+    if (providers.gradleProperty("signingInMemoryKey").isPresent) {
+        signAllPublications()
+    }
+
+    pom {
+        name.set("Compose Multiplatform Charts")
+        description.set("Customizable Canvas charts for Compose Multiplatform on Android, iOS, desktop, and Wasm.")
+        inceptionYear.set("2022")
+        url.set("https://github.com/gurgen-k-y/compose-multiplatform-charts")
+
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/license/mit")
+                distribution.set("repo")
+            }
+        }
+        developers {
+            developer {
+                id.set("gurgen-k-y")
+                name.set("Gurgen Khachatryan")
+                url.set("https://github.com/gurgen-k-y")
+            }
+        }
+        scm {
+            url.set("https://github.com/gurgen-k-y/compose-multiplatform-charts")
+            connection.set("scm:git:git://github.com/gurgen-k-y/compose-multiplatform-charts.git")
+            developerConnection.set("scm:git:ssh://git@github.com/gurgen-k-y/compose-multiplatform-charts.git")
+        }
+        issueManagement {
+            system.set("GitHub Issues")
+            url.set("https://github.com/gurgen-k-y/compose-multiplatform-charts/issues")
+        }
+    }
+}
