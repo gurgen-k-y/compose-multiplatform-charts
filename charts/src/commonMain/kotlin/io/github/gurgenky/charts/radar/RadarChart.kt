@@ -9,6 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.gurgenky.charts.theme.ChartTheme
@@ -75,7 +77,7 @@ fun RadarChart(
     gridColor: Color = ChartTheme.colors.grid,
     axisColor: Color = ChartTheme.colors.axis,
 ) {
-    Canvas(modifier) {
+    Canvas(modifier.semantics { contentDescription = "Radar chart with ${data.axes.size} axes" }) {
         val radius = min(size.width, size.height) / 2f
         if (radius <= 0f) return@Canvas
         val vertices = vertices(data.axes.size, radius, config.startAngleDegrees)
