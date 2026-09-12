@@ -2,13 +2,14 @@
 
 ## Project
 
-This repository provides Canvas-based charts for Compose Multiplatform. The public Kotlin namespace is `io.github.gurgenky.charts`. The `charts` module contains the library and `example` is the Android, iOS, desktop, and Wasm gallery.
+This repository provides Canvas-based charts for Compose Multiplatform. The public Kotlin namespace is `io.github.gurgenky.charts`. The `charts` module is the only published library. `example` contains shared gallery UI and the desktop/Wasm launchers; `androidApp` packages the Android gallery.
 
 ## Commands
 
 - `./gradlew check` — run all available checks.
-- `./gradlew :charts:allTests` — run multiplatform library tests.
+- `./gradlew :charts:desktopTest` — run portable library tests.
 - `./gradlew :example:wasmJsBrowserDevelopmentRun` — run the web gallery.
+- `./gradlew :example:wasmJsBrowserDistribution :charts:dokkaGenerate` — build the Pages inputs.
 - `./gradlew :charts:publishToMavenLocal` — validate local publication.
 
 ## Engineering rules
@@ -28,5 +29,6 @@ This repository provides Canvas-based charts for Compose Multiplatform. The publ
 - Never commit credentials, signing keys, generated build output, or local properties.
 - Before a release, run tests, API validation, documentation generation, and local Maven publication.
 - Maven Central publishing must run only from a version tag through the protected release environment.
+- Publish only `:charts`; the gallery modules must never apply a publishing plugin.
 
 Read matching files in `.claude/rules/` for path-specific requirements and use project skills for repeatable chart, upgrade, validation, and release workflows.
